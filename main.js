@@ -13,7 +13,7 @@ function getTime() { // Returns the number of milliseconds since the beginning.
 
 var score = 0;
 
-var groundHeight = 50;
+var groundHeight = 51;
 var ground = canvas.height - groundHeight;
 var ballRadius = 40;
 
