@@ -82,6 +82,7 @@ function bounceBall(x) {
 			bouncing = false;
 			document.getElementById("score").innerHTML = Math.floor(score / 75 * 10000) / 10000;
 			score = 0; // reset
+			gameOver();
 		}
 	}
 	mapMove(8);
@@ -162,7 +163,7 @@ function update() {
 				radius: ballRadius
 			})
 		) {
-			document.getElementById("highScore").innerHTML = getTime();
+			gameOver();
 		}
 	});
 	trampolines.forEach(function(trampoline) {
@@ -171,6 +172,7 @@ function update() {
 	drawBall();
 	window.requestAnimationFrame(update);
 }
+
 function backgroundHeight() {
 	ctx.fillStyle = "limegreen";
 	ctx.beginPath();
@@ -219,4 +221,8 @@ function testLine() {
 		ctx.strokeStyle = "#255";
 		ctx.stroke();
 	}
+}
+
+function gameOver() {
+	document.getElementById("gameOver").style.display = "block";
 }
