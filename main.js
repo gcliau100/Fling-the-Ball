@@ -22,6 +22,7 @@ document.getElementById("highScore").innerHTML = highscore;
 var groundHeight = 110;
 var ground = canvas.height - groundHeight;
 var ballRadius = 40;
+var ballType = "tennisball";
 
 var mouse = {
 	x: null,
@@ -248,6 +249,16 @@ function drawBall() {
 	ctx.beginPath();
 	ctx.arc(ballPos.x, ballPos.y, ballRadius-10, Math.PI*2, false);
 	ctx.fill();
+
+	var ballImage = 0;
+
+	if(ballType === "basketball") {
+		ballImage = 2;
+	} else if(ballType === "tennisball") {
+		ballImage = 3;
+	}
+
+	ctx.drawImage(allImages[ballImage], 0, 0, allImages[ballImage].width, allImages[ballImage].height, ballPos.x-ballRadius, ballPos.y-ballRadius, ballRadius*2, ballRadius*2);
 }
 
 function gameOver() {
