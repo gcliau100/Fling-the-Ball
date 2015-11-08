@@ -1,3 +1,7 @@
+document.getElementById("overlay").onclick = function() {
+	document.getElementById("overlay").style.display = "none";
+};
+
 var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
