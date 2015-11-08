@@ -6,6 +6,10 @@ var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
+var beginningTime = (new Date()).getTime();
+function getTime() { // Returns the number of milliseconds since the beginning.
+    return Math.round((new Date()).getTime() - beginningTime);
+}
 
 var groundHeight = 50;
 var ground = canvas.height - groundHeight;
@@ -18,12 +22,14 @@ var mouse = {
 
 var controls = {
 	x: null,
-	y: null
+	y: null,
+	time: null
 };
 
 var controls2 = {
 	x: null,
-	y: null
+	y: null,
+	time: null
 };
 
 canvas.addEventListener("mousemove", function(event) {
@@ -36,20 +42,31 @@ canvas.addEventListener("touchstart", function(event) {
 	controls2.y = null;
 	controls.x = event.changedTouches[0].pageX;
 	controls.y = event.changedTouches[0].pageY;
+	controls.time = getTime();
 }, false);
 
 canvas.addEventListener("touchend", function(event) {
 	controls2.x = event.changedTouches[0].pageX;
 	controls2.y = event.changedTouches[0].pageY;
-	bouncing = true;
+	controls2.time = getTime();
+
+	if(!bouncing) {
+		bouncing = true;
+		initialVel = flickAngle()/2;
+		document.getElementById("score").innerHTML = Math.floor(flickAngle()*200)/1000;
+	}
 }, false);
 
 function flickAngle() {
-	return arctan((controls2.x-controls.x)/(controls2.y-controls.y));
+	return 90-Math.abs(Math.atan((controls2.x-controls.x)/(controls2.y-controls.y)))*180/Math.PI;
+}
+
+function flickSpeed() {
+	return controls2.time - controls.time;
 }
 
 var bouncing = false;
-var initialVel = 30;
+var initialVel = 0;
 var accel = initialVel;
 
 function bounceBall(x) {
@@ -60,11 +77,11 @@ function bounceBall(x) {
 		accel = initialVel;
 		ballPos.y = ground - ballRadius;
 		if(initialVel < 1) {
-			initialVel = 30;
+			initialVel = 0;
 			bouncing = false;
 		}
 	}
-	mapMove(10);
+	mapMove(8);
 }
 
 function mapMove(dist) {
