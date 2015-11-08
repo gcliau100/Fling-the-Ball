@@ -1,7 +1,7 @@
 var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
-canvas.width= window.innerWidth;
-canvas.height= window.innerHeight;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
 var groundHeight = 50;
 var ground = canvas.height - groundHeight;
@@ -60,6 +60,13 @@ function bounceBall(x) {
 			bouncing = false;
 		}
 	}
+	mapMove(10);
+}
+
+function mapMove(dist) {
+	spikes.forEach(function(spike) {
+		spike.x -= dist;
+	});
 }
 
 var ballPos = {
@@ -67,9 +74,9 @@ var ballPos = {
 	y: ground - ballRadius
 };
 
-var spikes= new Image();
-spikes.src = "spikes.png";
-spikes.onload = function() {
+var spikesImg = new Image();
+spikesImg.src = "spikes.png";
+spikesImg.onload = function() {
 	update();
 };
 
@@ -81,7 +88,9 @@ function update() {
 	}
 	drawBall();
 	testLine();
-	firstSpike.draw();
+	spikes.forEach(function(spike) {
+		spike.draw();
+	});
 	window.requestAnimationFrame(update);
 }
 function backgroundHeight() {
@@ -91,14 +100,18 @@ function backgroundHeight() {
 	ctx.fill();
 }
 
-function Spike(x) { //class
+function Spike(x) { // class
 	this.x = x;
 	this.draw = function() {
-		ctx.drawImage(spikes,0, 0, 800,500, this.x, ground-102, 200, 125);
+		ctx.drawImage(spikesImg,0, 0, 800,500, this.x, ground-102, 200, 125);
 	};
 }
 
-var firstSpike = new Spike(1100);
+var spikes = [];
+
+for(var i = 0; i < 20; i++) {
+	spikes.push(new Spike(400*i+1000));
+}
 
 function drawBall() {
 	ctx.fillStyle = "#230EBE";
