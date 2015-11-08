@@ -102,6 +102,26 @@ var ballPos = {
 	y: ground - ballRadius
 };
 
+function findDist(pointone, pointtwo) {
+    return Math.sqrt(Math.pow(pointtwo.x-pointone.x, 2) + Math.pow(pointtwo.y-pointone.y, 2));
+}
+
+function findCollision(square, circle) { // returns true if circle touches the square
+    var halfSide = square.sideLength/2;
+
+	var cornerCol =
+    (findDist({x: square.center.x-halfSide, y: square.center.y-halfSide}, {x: circle.center.x, y: circle.center.y}) < circle.radius) ||
+    (findDist({x: square.center.x+halfSide, y: square.center.y-halfSide}, {x: circle.center.x, y: circle.center.y}) < circle.radius) ||
+    (findDist({x: square.center.x+halfSide, y: square.center.y+halfSide}, {x: circle.center.x, y: circle.center.y}) < circle.radius) ||
+    (findDist({x: square.center.x-halfSide, y: square.center.y+halfSide}, {x: circle.center.x, y: circle.center.y}) < circle.radius);
+
+    var sideCol =
+    (square.center.x-halfSide < circle.center.x && circle.center.x < square.center.x+halfSide && square.center.y-halfSide-circle.radius < circle.center.y && circle.center.y < square.center.y+halfSide+circle.radius) ||
+    (square.center.x-halfSide-circle.radius < circle.center.x && circle.center.x < square.center.x+halfSide+circle.radius && square.center.y-halfSide < circle.center.y && circle.center.y < square.center.y+halfSide);
+
+    return (cornerCol || sideCol);
+}
+
 var trampolineImg = new Image();
 trampolineImg.src = "trampoline.png";
 var spikesImg = new Image();
@@ -121,6 +141,29 @@ function update() {
 	testLine();
 	spikes.forEach(function(spike) {
 		spike.draw();
+		if(
+			findCollision({
+				center: {
+					x: spike.x+62.5,
+					y: ground-102+62.5
+				},
+				sideLength: 125
+			}, {
+				center: ballPos,
+				radius: ballRadius
+			}) && findCollision({
+				center: {
+					x: spike.x+137.5,
+					y: ground-102+62.5
+				},
+				sideLength: 125
+			}, {
+				center: ballPos,
+				radius: ballRadius
+			})
+		) {
+			document.getElementById("highScore").innerHTML = getTime();
+		}
 	});
 	trampolines.forEach(function(trampoline) {
 		trampoline.draw();
