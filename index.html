@@ -1,24 +1,70 @@
 <!DOCTYPE html>
 <html>
-<head>
-<title>Fling the Ball</title>
-<style>
-* {
-	margin: 0;
-	padding: 0;
-	}
-	body{
-		overflow: hidden;
-	}
-	</style>
-</head>
-<body>
+	<head>
+		<title>Fling the Ball</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			body{
+				overflow: hidden;
+			}
+			#scoreContainer {
+				position: fixed;
+				z-index: 1;
+				top: 0;
+				right: 0;
+				background-color: #eee;
+				font-family: "Arial", sans-serif;
+				font-size: 2em;
+				padding: 10px 20px;
+				border-bottom-left-radius: 5px;
+			}
+			#overlay {
+				position: fixed;
+				z-index: 5;
+				width: 100%;
+				height: 100%;
+				background: #ccc;
+				top: 0;
+				left: 0;
+			}
+			#overlay {
+				text-align: center;
+				padding-top: 200px;
+				background-color: #fff;
+				font-family: "Arial", sans-serif;
+				font-size: 3em;
+				line-height: 1.5em;
+			}
+			.exclamation {
+				text-transform: uppercase;
+			}
+			#tostart {
+				color: #333;
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="game" width="500" height="1000">
+			Your browser does not support the HTML5 canvas tag.
+		</canvas>
+		<div id="overlay">
+			Fling the Ball
+			<br/>
+			<span class="exclamation">Get the high score!</span>
+			<br/>
+			<span id="tostart">Right click to start</span>
+			<!-- make blue ball div -->
+			<!-- <img src="Untitled.png" /> -->
+		</div>
 
-<canvas id="game" width="500" height="1000" style="border:1px solid #c3c3c3;">
-Your browser does not support the HTML5 canvas tag.
-</canvas>
+		<div id="scoreContainer">
+			Your score: <span id="score">0</span>
+		</div>
 
-<script src="main.js"></script>
+		<script src="main.js"></script>
 
-</body>
+	</body>
 </html>
