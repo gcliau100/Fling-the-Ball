@@ -19,7 +19,7 @@ if(!highscore) {
 }
 document.getElementById("highScore").innerHTML = highscore;
 
-var groundHeight = 51;
+var groundHeight = 110;
 var ground = canvas.height - groundHeight;
 var ballRadius = 40;
 
@@ -140,15 +140,26 @@ function findCollision(square, circle) { // returns true if circle touches the s
     return (cornerCol || sideCol);
 }
 
-var trampolineImg = new Image();
-trampolineImg.src = "https://cloud.githubusercontent.com/assets/15713577/11020742/34a4eabe-85de-11e5-990b-ccaf6e0f1166.png";
-var spikesImg = new Image();
-spikesImg.src = "https://cloud.githubusercontent.com/assets/15713577/11020737/15726a54-85de-11e5-9d88-7cde0b819af1.png";
-trampolineImg.onload = function() {
-	spikesImg.onload = function() {
-		update();
+var allImages = [];
+var imagesLoaded = 0;
+allImages[0] = new Image(); allImages[0].src = "https://cloud.githubusercontent.com/assets/15713577/11020742/34a4eabe-85de-11e5-990b-ccaf6e0f1166.png";
+allImages[1] = new Image(); allImages[1].src = "https://cloud.githubusercontent.com/assets/15713577/11020737/15726a54-85de-11e5-9d88-7cde0b819af1.png";
+allImages[2] = new Image(); allImages[2].src = "basketball.png";
+allImages[3] = new Image(); allImages[3].src = "tennisball.png";
+for(var i = 0; i < allImages.length; i++){
+	allImages[i].onload = function() {
+		imagesLoaded++;
+		if(imagesLoaded == allImages.length){
+			console.log("All images finished loading.");
+			update();
+		}
 	};
-};
+}
+
+var trampolineImg = allImages[0];
+var spikesImg = allImages[1];
+var basketballImg = allImages[2];
+var tennisballImg = allImages[3];
 
 function update() {
 	ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -156,7 +167,6 @@ function update() {
 	if(bouncing) {
 		bounceBall();
 	}
-	// testLine();
 	spikes.forEach(function(spike) {
 		spike.draw();
 		if(
@@ -195,7 +205,7 @@ function update() {
 }
 
 function backgroundHeight() {
-	ctx.fillStyle = "limegreen";
+	ctx.fillStyle = "#19860c";
 	ctx.beginPath();
 	ctx.rect(0, ground, canvas.width, groundHeight);
 	ctx.fill();
@@ -228,20 +238,16 @@ for(var j = 0; j < 30; j++) { // make 30 trampolines
 }
 
 function drawBall() {
-	ctx.fillStyle = "#230EBE";
+	var hue = Math.floor(getTime()/10)%360;
+	ctx.fillStyle = ctx.strokeStyle = "hsl("+hue+", 85%, 10%)";
 	ctx.beginPath();
 	ctx.arc(ballPos.x, ballPos.y, ballRadius, Math.PI*2, false);
 	ctx.fill();
-}
 
-function testLine() {
-	if(controls.x && controls.y && controls2.y && controls2.y) {
-		ctx.beginPath();
-		ctx.moveTo(controls.x, controls.y);
-		ctx.lineTo(controls2.x, controls2.y);
-		ctx.strokeStyle = "#255";
-		ctx.stroke();
-	}
+	ctx.fillStyle = ctx.strokeStyle = "hsl("+hue+", 85%, 40%)";
+	ctx.beginPath();
+	ctx.arc(ballPos.x, ballPos.y, ballRadius-10, Math.PI*2, false);
+	ctx.fill();
 }
 
 function gameOver() {
