@@ -129,9 +129,9 @@ function findCollision(square, circle) { // returns true if circle touches the s
 }
 
 var trampolineImg = new Image();
-trampolineImg.src = "trampoline.png";
+trampolineImg.src = "https://cloud.githubusercontent.com/assets/15713577/11020742/34a4eabe-85de-11e5-990b-ccaf6e0f1166.png";
 var spikesImg = new Image();
-spikesImg.src = "spikes.png";
+spikesImg.src = "https://cloud.githubusercontent.com/assets/15713577/11020737/15726a54-85de-11e5-9d88-7cde0b819af1.png";
 trampolineImg.onload = function() {
 	spikesImg.onload = function() {
 		update();
