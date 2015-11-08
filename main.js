@@ -63,14 +63,21 @@ function flickAngle() {
 }
 
 function flickSpeed() {
-	return controls2.time - controls.time;
+	var d = findDist({
+		x: controls.x,
+		y: controls.y
+	}, {
+		x: controls2.x,
+		y: controls2.y
+	})*10;
+	return d/(controls2.time - controls.time);
 }
 
 var bouncing = false;
 var initialVel = 0;
 var accel = initialVel;
 
-function bounceBall(x) {
+function bounceBall() {
 	ballPos.y -= accel;
 	accel -= 1;
 	if(ballPos.y > ground - ballRadius) {
@@ -83,7 +90,7 @@ function bounceBall(x) {
 			gameOver();
 		}
 	}
-	mapMove(8);
+	mapMove(flickSpeed());
 }
 
 function mapMove(dist) {
