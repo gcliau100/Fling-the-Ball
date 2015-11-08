@@ -13,6 +13,11 @@ function getTime() { // Returns the number of milliseconds since the beginning.
 
 var score = 0;
 
+var highscore = localStorage.highscore;
+if(!highscore) {
+	highscore = 0;
+}
+
 var groundHeight = 51;
 var ground = canvas.height - groundHeight;
 var ballRadius = 40;
@@ -52,14 +57,18 @@ canvas.addEventListener("touchend", function(event) {
 	controls2.y = event.changedTouches[0].pageY;
 	controls2.time = getTime();
 
-	if(!bouncing) {
-		bouncing = true;
-		initialVel = flickAngle()/2;
+	initialModifier = flickSpeed();
+
+	if(controls2.x > controls.x) {
+		if(!bouncing) {
+			bouncing = true;
+			initialVel = flickAngle()/2;
+		}
 	}
 }, false);
 
 function flickAngle() {
-	return 90-Math.abs(Math.atan((controls2.x-controls.x)/(controls2.y-controls.y)))*180/Math.PI;
+	return Math.abs(90-Math.abs(Math.atan((controls2.x-controls.x)/(controls2.y-controls.y)))*180/Math.PI);
 }
 
 function flickSpeed() {
@@ -76,6 +85,7 @@ function flickSpeed() {
 var bouncing = false;
 var initialVel = 0;
 var accel = initialVel;
+var initialModifier = 1;
 
 function bounceBall() {
 	ballPos.y -= accel;
@@ -90,10 +100,11 @@ function bounceBall() {
 			gameOver();
 		}
 	}
-	mapMove(flickSpeed());
+	mapMove(initialModifier);
 }
 
 function mapMove(dist) {
+	dist = Math.abs(dist);
 	spikes.forEach(function(spike) {
 		spike.x -= dist;
 	});
@@ -144,7 +155,7 @@ function update() {
 	if(bouncing) {
 		bounceBall();
 	}
-	testLine();
+	// testLine();
 	spikes.forEach(function(spike) {
 		spike.draw();
 		if(
@@ -173,6 +184,9 @@ function update() {
 	});
 	trampolines.forEach(function(trampoline) {
 		trampoline.draw();
+		if(ballPos.y+ballRadius > ground-50 && ballPos.x > trampoline.x && ballPos.x < trampoline.x + 205) {
+			accel *= 1.3;
+		}
 	});
 	drawBall();
 	document.getElementById("score").innerHTML = Math.floor(score / 75 * 100) / 100;
@@ -231,6 +245,11 @@ function testLine() {
 
 function gameOver() {
 	bouncing = false;
+	if(score > highscore) {
+		highscore = score;
+		localStorage.highscore = score;
+	}
 	document.getElementById("gameOverScore").innerHTML = Math.floor(score / 75 * 100) / 100;
+	document.getElementById("gameOverHighScore").innerHTML = highscore;
 	document.getElementById("gameOver").style.display = "block";
 }
