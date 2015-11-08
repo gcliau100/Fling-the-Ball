@@ -22,7 +22,10 @@ document.getElementById("highScore").innerHTML = highscore;
 var groundHeight = 110;
 var ground = canvas.height - groundHeight;
 var ballRadius = 40;
-var ballType = "tennisball";
+var ballType = "rainbow";
+function changeType(newType) {
+	ballType = newType;
+}
 
 var mouse = {
 	x: null,
@@ -107,6 +110,8 @@ function bounceBall() {
 
 function mapMove(dist) {
 	dist = Math.abs(dist);
+	if(ballType === "basketball") dist *= 0.75;
+	if(ballType === "tennisball") dist *= 1.4;
 	spikes.forEach(function(spike) {
 		spike.x -= dist;
 	});
@@ -197,7 +202,13 @@ function update() {
 	trampolines.forEach(function(trampoline) {
 		trampoline.draw();
 		if(ballPos.y+ballRadius > ground-50 && ballPos.x > trampoline.x && ballPos.x < trampoline.x + 205) {
-			initialVel *= 1.6;
+			if(ballType === "basketball") {
+				initialVel *= 1.8;
+			} else if(ballType === "tennisball") {
+				initialVel *= 1.1;
+			} else {
+				initialVel *= 1.5;
+			}
 		}
 	});
 	drawBall();
@@ -239,26 +250,24 @@ for(var j = 0; j < 30; j++) { // make 30 trampolines
 }
 
 function drawBall() {
-	var hue = Math.floor(getTime()/10)%360;
-	ctx.fillStyle = ctx.strokeStyle = "hsl("+hue+", 85%, 10%)";
-	ctx.beginPath();
-	ctx.arc(ballPos.x, ballPos.y, ballRadius, Math.PI*2, false);
-	ctx.fill();
-
-	ctx.fillStyle = ctx.strokeStyle = "hsl("+hue+", 85%, 40%)";
-	ctx.beginPath();
-	ctx.arc(ballPos.x, ballPos.y, ballRadius-10, Math.PI*2, false);
-	ctx.fill();
-
 	var ballImage = 0;
 
 	if(ballType === "basketball") {
-		ballImage = 2;
+		ctx.drawImage(basketballImg, 0, 0, basketballImg.width, basketballImg.height, ballPos.x-ballRadius, ballPos.y-ballRadius, ballRadius*2, ballRadius*2);
 	} else if(ballType === "tennisball") {
-		ballImage = 3;
-	}
+		ctx.drawImage(tennisballImg, 0, 0, tennisballImg.width, tennisballImg.height, ballPos.x-ballRadius, ballPos.y-ballRadius, ballRadius*2, ballRadius*2);
+	} else { // rainbow
+		var hue = Math.floor(getTime()/10)%360;
+		ctx.fillStyle = ctx.strokeStyle = "hsl("+hue+", 85%, 10%)";
+		ctx.beginPath();
+		ctx.arc(ballPos.x, ballPos.y, ballRadius, Math.PI*2, false);
+		ctx.fill();
 
-	ctx.drawImage(allImages[ballImage], 0, 0, allImages[ballImage].width, allImages[ballImage].height, ballPos.x-ballRadius, ballPos.y-ballRadius, ballRadius*2, ballRadius*2);
+		ctx.fillStyle = ctx.strokeStyle = "hsl("+hue+", 85%, 40%)";
+		ctx.beginPath();
+		ctx.arc(ballPos.x, ballPos.y, ballRadius-10, Math.PI*2, false);
+		ctx.fill();
+	}
 }
 
 function gameOver() {

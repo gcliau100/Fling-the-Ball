@@ -14,10 +14,8 @@ canvas {
     z-index: 1;
     top: 0;
     right: 0;
-    background-color: #eee;
     font-size: 2em;
     padding: 10px 20px;
-    border-bottom-left-radius: 5px;
     text-align: right;
 }
 #score, #highScore {
@@ -61,7 +59,7 @@ canvas {
     height: 80px;
     width: 80px;
     border-radius: 50%;
-    background-color: rgb(85, 15, 199);
+    background-color: #550fc7;
     position: fixed;
     bottom: 110px;
     left: 300px;
@@ -70,17 +68,19 @@ canvas {
     position: fixed;
     top: 20px;
     right: 20px;
-    /*background: #666;*/
-    padding: 10px;
 }
 #overlay #options button {
-    padding: 10px;
-    background: #ddd;
+    padding: 15px 20px;
+    background: #ccc;
+    margin: -20px 0;
     border: 2px solid #111;
-    font-size: 0.3em;
+    font-size: 0.45em;
     font-family: inherit;
+    width: 190px;
+    transition: 0.2s;
+} #overlay #options button:hover {
+    background: #888;
 }
-
 
 #gameOver {
     display: none;
