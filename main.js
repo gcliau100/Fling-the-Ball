@@ -80,8 +80,6 @@ function bounceBall(x) {
 		if(initialVel < 1) { // when finished bouncing
 			initialVel = 0;
 			bouncing = false;
-			document.getElementById("score").innerHTML = Math.floor(score / 75 * 10000) / 10000;
-			score = 0; // reset
 			gameOver();
 		}
 	}
@@ -170,6 +168,7 @@ function update() {
 		trampoline.draw();
 	});
 	drawBall();
+	document.getElementById("score").innerHTML = Math.floor(score / 75 * 100) / 100;
 	window.requestAnimationFrame(update);
 }
 
@@ -224,5 +223,7 @@ function testLine() {
 }
 
 function gameOver() {
+	bouncing = false;
+	document.getElementById("gameOverScore").innerHTML = Math.floor(score / 75 * 100) / 100;
 	document.getElementById("gameOver").style.display = "block";
 }
