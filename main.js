@@ -11,6 +11,8 @@ function getTime() { // Returns the number of milliseconds since the beginning.
     return Math.round((new Date()).getTime() - beginningTime);
 }
 
+var score = 0;
+
 var groundHeight = 50;
 var ground = canvas.height - groundHeight;
 var ballRadius = 40;
@@ -53,7 +55,6 @@ canvas.addEventListener("touchend", function(event) {
 	if(!bouncing) {
 		bouncing = true;
 		initialVel = flickAngle()/2;
-		document.getElementById("score").innerHTML = Math.floor(flickAngle()*200)/1000;
 	}
 }, false);
 
@@ -76,9 +77,11 @@ function bounceBall(x) {
 		initialVel *= 0.75;
 		accel = initialVel;
 		ballPos.y = ground - ballRadius;
-		if(initialVel < 1) {
+		if(initialVel < 1) { // when finished bouncing
 			initialVel = 0;
 			bouncing = false;
+			document.getElementById("score").innerHTML = Math.floor(score / 75 * 10000) / 10000;
+			score = 0; // reset
 		}
 	}
 	mapMove(8);
@@ -91,6 +94,7 @@ function mapMove(dist) {
 	trampolines.forEach(function(trampoline) {
 		trampoline.x -= dist;
 	});
+	score += dist;
 }
 
 var ballPos = {
