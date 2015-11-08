@@ -67,6 +67,9 @@ function mapMove(dist) {
 	spikes.forEach(function(spike) {
 		spike.x -= dist;
 	});
+	trampolines.forEach(function(trampoline) {
+		trampoline.x -= dist;
+	});
 }
 
 var ballPos = {
@@ -74,10 +77,14 @@ var ballPos = {
 	y: ground - ballRadius
 };
 
+var trampolineImg = new Image();
+trampolineImg.src = "trampoline.png";
 var spikesImg = new Image();
 spikesImg.src = "spikes.png";
-spikesImg.onload = function() {
-	update();
+trampolineImg.onload = function() {
+	spikesImg.onload = function() {
+		update();
+	};
 };
 
 function update() {
@@ -86,11 +93,14 @@ function update() {
 	if(bouncing) {
 		bounceBall();
 	}
-	drawBall();
 	testLine();
 	spikes.forEach(function(spike) {
 		spike.draw();
 	});
+	trampolines.forEach(function(trampoline) {
+		trampoline.draw();
+	});
+	drawBall();
 	window.requestAnimationFrame(update);
 }
 function backgroundHeight() {
@@ -109,8 +119,21 @@ function Spike(x) { // class
 
 var spikes = [];
 
-for(var i = 0; i < 20; i++) {
-	spikes.push(new Spike(400*i+1000));
+for(var i = 0; i < 30; i++) { // make 30 spikes
+	spikes.push(new Spike(800*(Math.random()+1)*i+1000));
+}
+
+function Trampoline(x) {
+	this.x = x;
+	this.draw = function() {
+		ctx.drawImage(trampolineImg,0, 0, 205, 75, this.x, ground-70, 205, 75);
+	};
+}
+
+var trampolines = [];
+
+for(var j = 0; j < 30; j++) { // make 30 trampolines
+	trampolines.push(new Trampoline(900*(Math.random()+1)*j+800));
 }
 
 function drawBall() {
