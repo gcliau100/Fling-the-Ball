@@ -186,7 +186,7 @@ function update() {
 	trampolines.forEach(function(trampoline) {
 		trampoline.draw();
 		if(ballPos.y+ballRadius > ground-50 && ballPos.x > trampoline.x && ballPos.x < trampoline.x + 205) {
-			accel *= 1.3;
+			initialVel *= 1.6;
 		}
 	});
 	drawBall();
@@ -253,4 +253,7 @@ function gameOver() {
 	document.getElementById("gameOverScore").innerHTML = Math.floor(score / 75 * 100) / 100;
 	document.getElementById("gameOverHighScore").innerHTML = highscore;
 	document.getElementById("gameOver").style.display = "block";
+	document.getElementById("gameOver").onclick = function() {
+		location.reload();
+	};
 }
