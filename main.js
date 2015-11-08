@@ -17,6 +17,7 @@ var highscore = localStorage.highscore;
 if(!highscore) {
 	highscore = 0;
 }
+document.getElementById("highScore").innerHTML = highscore;
 
 var groundHeight = 51;
 var ground = canvas.height - groundHeight;
@@ -245,9 +246,9 @@ function testLine() {
 
 function gameOver() {
 	bouncing = false;
-	if(score > highscore) {
-		highscore = score;
-		localStorage.highscore = score;
+	if(Math.floor(score / 75 * 100) / 100 > highscore) {
+		highscore = Math.floor(score / 75 * 100) / 100;
+		localStorage.highscore = highscore;
 	}
 	document.getElementById("gameOverScore").innerHTML = Math.floor(score / 75 * 100) / 100;
 	document.getElementById("gameOverHighScore").innerHTML = highscore;
