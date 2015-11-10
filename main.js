@@ -4,8 +4,10 @@ document.getElementById("overlay").onclick = function() {
 
 var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
-canvas.width = window.innerWidth;
+
+canvas.width = window.innerWidth; // make the canvas fill the entire space
 canvas.height = window.innerHeight;
+
 var beginningTime = (new Date()).getTime();
 function getTime() { // Returns the number of milliseconds since the beginning.
     return Math.round((new Date()).getTime() - beginningTime);
@@ -19,10 +21,10 @@ if(!highscore) {
 }
 document.getElementById("highScore").innerHTML = highscore;
 
-var groundHeight = 110;
+var groundHeight = 110; // pixels from the bottom of the canvas
 var ground = canvas.height - groundHeight;
 var ballRadius = 40;
-var ballType = "rainbow";
+var ballType = "rainbow"; // three types: rainbow, tennisball, or basketball
 function changeType(newType) {
 	ballType = newType;
 }
@@ -32,13 +34,13 @@ var mouse = {
 	y: null
 };
 
-var controls = {
+var cursorDown = {
 	x: null,
 	y: null,
 	time: null
 };
 
-var controls2 = {
+var cursorUp = {
 	x: null,
 	y: null,
 	time: null
@@ -49,42 +51,62 @@ canvas.addEventListener("mousemove", function(event) {
 	mouse.y = event.layerY;
 }, false);
 
-canvas.addEventListener("touchstart", function(event) {
-	controls2.x = null;
-	controls2.y = null;
-	controls.x = event.changedTouches[0].pageX;
-	controls.y = event.changedTouches[0].pageY;
-	controls.time = getTime();
+canvas.addEventListener("mousedown", function() {
+	cursorDown.x = mouse.x;
+	cursorDown.y = mouse.y;
+	cursorDownHandler();
+}, false);
+
+canvas.addEventListener("touchstart", function() {
+	cursorDown.x = event.changedTouches[0].pageX;
+	cursorDown.y = event.changedTouches[0].pageY;
+	cursorDownHandler();
 }, false);
 
 canvas.addEventListener("touchend", function(event) {
-	controls2.x = event.changedTouches[0].pageX;
-	controls2.y = event.changedTouches[0].pageY;
-	controls2.time = getTime();
+	cursorUp.x = event.changedTouches[0].pageX;
+	cursorUp.y = event.changedTouches[0].pageY;
+	cursorUpHandler();
+}, false);
+
+canvas.addEventListener("mouseup", function(event) {
+	cursorUp.x = mouse.x;
+	cursorUp.y = mouse.y;
+	cursorUpHandler();
+}, false);
+
+function cursorDownHandler() {
+	cursorUp.x = null;
+	cursorUp.y = null;
+	cursorDown.time = getTime();
+}
+
+function cursorUpHandler() {
+	cursorUp.time = getTime();
 
 	initialModifier = flickSpeed();
 
-	if(controls2.x > controls.x) {
+	if(cursorUp.x > cursorDown.x) {
 		if(!bouncing) {
 			bouncing = true;
 			initialVel = flickAngle()/2;
 		}
 	}
-}, false);
+}
 
 function flickAngle() {
-	return Math.abs(90-Math.abs(Math.atan((controls2.x-controls.x)/(controls2.y-controls.y)))*180/Math.PI);
+	return Math.abs(90-Math.abs(Math.atan((cursorUp.x-cursorDown.x)/(cursorUp.y-cursorDown.y)))*180/Math.PI);
 }
 
 function flickSpeed() {
 	var d = findDist({
-		x: controls.x,
-		y: controls.y
+		x: cursorDown.x,
+		y: cursorDown.y
 	}, {
-		x: controls2.x,
-		y: controls2.y
+		x: cursorUp.x,
+		y: cursorUp.y
 	})*10;
-	return d/(controls2.time - controls.time);
+	return d/(cursorUp.time - cursorDown.time);
 }
 
 var bouncing = false;
@@ -230,12 +252,6 @@ function Spike(x) { // class
 	};
 }
 
-var spikes = [];
-
-for(var i = 0; i < 30; i++) { // make 30 spikes
-	spikes.push(new Spike(800*(Math.random()+1)*i+1000));
-}
-
 function Trampoline(x) {
 	this.x = x;
 	this.draw = function() {
@@ -243,10 +259,18 @@ function Trampoline(x) {
 	};
 }
 
+var spikes = [];
 var trampolines = [];
 
-for(var j = 0; j < 30; j++) { // make 30 trampolines
-	trampolines.push(new Trampoline(900*(Math.random()+1)*j+800));
+var counter = 400;
+
+for(var i = 0; i < 70; i++) {
+	counter += Math.random()*800+500;
+	if(Math.random() < 0.6) { // 60% chance to make a spike
+		spikes.push(new Spike(counter));
+	} else { // 40% chance to make a trampoline
+		trampolines.push(new Trampoline(counter));
+	}
 }
 
 function drawBall() {
