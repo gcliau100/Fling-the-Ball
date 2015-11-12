@@ -15,26 +15,27 @@
 		<div id="overlay">
 			<h1>Fling the Ball</h1>
 			<h2>Get the highest score!</h2>
-			<h3 id="tostart">Click to start</h3>
+			<h3 id="tostart">Choose a ball type to start</h3>
 			<div id="ball"></div>
 			<div id="grass"></div>
 			<div id="options">
-				<button onclick="changeType('rainbow')">Rainbow ball</button><br/>
-				<button onclick="changeType('tennisball')">Tennis ball</button><br/>
-				<button onclick="changeType('basketball')">Basketball</button>
+				<button id="rainbow">Rainbow ball</button><br/>
+				<button id="basketball" class="locked">Basketball</button><br/>
+				<button id="tennisball" class="locked">Tennis ball</button>
+				<h4>Coins: <span id="coins">0</span></h4>
 			</div>
 		</div>
 
 		<div
-  		class="fb-like"
-		data-share="true"
-  		data-width="450"
-		data-show-faces="true">
+			class="fb-like"
+			data-share="true"
+			data-width="450"
+			data-show-faces="true">
 		</div>
 
 		<div id="gameOver">
-			<h1>Score: <span id="gameOverScore">23.171</span>ft</h1>
-			<h2>High score: <span id="gameOverHighScore">0</span>ft</h2>
+			<h1>Score: <span id="gameOverScore">0</span> ft</h1>
+			<h2>High score: <span id="gameOverHighScore">0</span> ft</h2>
 			<h3>Click anywhere to play again</h3>
 		</div>
 

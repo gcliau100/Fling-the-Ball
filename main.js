@@ -1,7 +1,3 @@
-document.getElementById("overlay").onclick = function() {
-	document.getElementById("overlay").style.display = "none";
-};
-
 var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
 
@@ -15,18 +11,49 @@ function getTime() { // Returns the number of milliseconds since the beginning.
 
 var score = 0;
 
-var highscore = localStorage.highscore;
-if(!highscore) {
-	highscore = 0;
-}
+var highscore = (+localStorage.highscore) || 0;
 document.getElementById("highScore").innerHTML = highscore;
+
+function getCoins() {
+	var coins = localStorage.coins || 0;
+	return + coins; // return an integer
+}
+
+function addCoins(coinsToAdd) {
+	coinsToAdd = Math.floor(coinsToAdd);
+	localStorage.coins = getCoins() + coinsToAdd;
+}
+
+var basketballUnlocked = (localStorage.basketball && localStorage.basketball !== "false") || false;
+var tennisballUnlocked = (localStorage.tennisball && localStorage.tennisball !== "false") || false;
+
+if(basketballUnlocked) {
+	document.getElementById("basketball").className = "";
+	document.getElementById("basketball").onclick = function() {
+		chooseType("basketball");
+	};
+}
+
+if(tennisballUnlocked) {
+	document.getElementById("tennisball").className = "";
+	document.getElementById("tennisball").onclick = function() {
+		chooseType("tennisball");
+	};
+}
+
+document.getElementById("rainbow").onclick = function() {
+	chooseType("rainbow");
+};
+
+document.getElementById("coins").innerHTML = getCoins();
 
 var groundHeight = 110; // pixels from the bottom of the canvas
 var ground = canvas.height - groundHeight;
 var ballRadius = 40;
 var ballType = "rainbow"; // three types: rainbow, tennisball, or basketball
-function changeType(newType) {
-	ballType = newType;
+function chooseType(type) {
+	ballType = type;
+	document.getElementById("overlay").style.display = "none";
 }
 
 var mouse = {
@@ -296,11 +323,15 @@ function drawBall() {
 
 function gameOver() {
 	bouncing = false;
-	if(Math.floor(score / 75 * 100) / 100 > highscore) {
-		highscore = Math.floor(score / 75 * 100) / 100;
+	var score_ = Math.floor(score / 75 * 100) / 100;
+	if(score_ > highscore) {
+		highscore = score_;
 		localStorage.highscore = highscore;
 	}
-	document.getElementById("gameOverScore").innerHTML = Math.floor(score / 75 * 100) / 100;
+
+	addCoins(score_);
+
+	document.getElementById("gameOverScore").innerHTML = score_;
 	document.getElementById("gameOverHighScore").innerHTML = highscore;
 	document.getElementById("gameOver").style.display = "block";
 	document.getElementById("gameOver").onclick = function() {
