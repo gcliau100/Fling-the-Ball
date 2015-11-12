@@ -197,18 +197,20 @@ function findCollision(square, circle) { // returns true if circle touches the s
 
 var allImages = [];
 var imagesLoaded = 0;
-allImages[0] = new Image(); allImages[0].src = "https://cloud.githubusercontent.com/assets/15713577/11020742/34a4eabe-85de-11e5-990b-ccaf6e0f1166.png";
-allImages[1] = new Image(); allImages[1].src = "https://cloud.githubusercontent.com/assets/15713577/11020737/15726a54-85de-11e5-9d88-7cde0b819af1.png";
-allImages[2] = new Image(); allImages[2].src = "basketball.png";
-allImages[3] = new Image(); allImages[3].src = "tennisball.png";
+allImages[0] = new Image(); allImages[0].src = "img/trampoline.png";
+allImages[1] = new Image(); allImages[1].src = "img/spikes.png";
+allImages[2] = new Image(); allImages[2].src = "img/basketball.png";
+allImages[3] = new Image(); allImages[3].src = "img/tennisball.png";
 for(var i = 0; i < allImages.length; i++){
-	allImages[i].onload = function() {
-		imagesLoaded++;
-		if(imagesLoaded == allImages.length){
-			console.log("All images finished loading.");
-			update();
-		}
-	};
+	allImages[i].onload = imgOnload;
+}
+
+function imgOnload() {
+    imagesLoaded++;
+    if(imagesLoaded === allImages.length){
+        console.log("All images finished loading.");
+        update();
+    }
 }
 
 var trampolineImg = allImages[0];
