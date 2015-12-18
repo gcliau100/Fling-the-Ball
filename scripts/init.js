@@ -49,89 +49,60 @@ document.getElementById("coins").innerHTML = getCoins();
 
 var groundHeight = 110; // pixels from the bottom of the canvas
 var ground = canvas.height - groundHeight;
-var ballRadius = 40;
-var ballType = "rainbow"; // three types: rainbow, tennisball, or basketball
-function chooseType(type) {
-	ballType = type;
-	document.getElementById("overlay").style.display = "none";
+
+function Spike(initialX) { // class
+	this.x = initialX;
+	this.draw = function() {
+		ctx.drawImage(spikesImg, 0, 0, 800, 500, this.x, ground-102, 200, 125);
+	};
 }
 
-var mouse = {
-	x: null,
-	y: null
-};
-
-var cursorDown = {
-	x: null,
-	y: null,
-	time: null
-};
-
-var cursorUp = {
-	x: null,
-	y: null,
-	time: null
-};
-
-canvas.addEventListener("mousemove", function(event) {
-	mouse.x = event.layerX;
-	mouse.y = event.layerY;
-}, false);
-
-canvas.addEventListener("mousedown", function() {
-	cursorDown.x = mouse.x;
-	cursorDown.y = mouse.y;
-	cursorDownHandler();
-}, false);
-
-canvas.addEventListener("touchstart", function() {
-	cursorDown.x = event.changedTouches[0].pageX;
-	cursorDown.y = event.changedTouches[0].pageY;
-	cursorDownHandler();
-}, false);
-
-canvas.addEventListener("touchend", function(event) {
-	cursorUp.x = event.changedTouches[0].pageX;
-	cursorUp.y = event.changedTouches[0].pageY;
-	cursorUpHandler();
-}, false);
-
-canvas.addEventListener("mouseup", function(event) {
-	cursorUp.x = mouse.x;
-	cursorUp.y = mouse.y;
-	cursorUpHandler();
-}, false);
-
-function cursorDownHandler() {
-	cursorUp.x = null;
-	cursorUp.y = null;
-	cursorDown.time = getTime();
+function Trampoline(initialX) {
+	this.x = initialX;
+	this.draw = function() {
+		ctx.drawImage(trampolineImg, 0, 0, 205, 75, this.x, ground-70, 205, 75);
+	};
 }
 
-function cursorUpHandler() {
-	cursorUp.time = getTime();
+var spikes = [];
+var trampolines = [];
 
-	initialModifier = flickSpeed();
-
-	if(cursorUp.x > cursorDown.x) {
-		if(!bouncing) {
-			bouncing = true;
-			initialVel = flickAngle()/2;
-		}
+var counter = 400;
+for(var i = 0; i < 70; i++) {
+	counter += Math.random()*800+500;
+	if(Math.random() < 0.6) { // 60% chance to make a spike
+		spikes.push(new Spike(counter));
+	} else { // 40% chance to make a trampoline
+		trampolines.push(new Trampoline(counter));
 	}
 }
 
-function flickAngle() {
-	return Math.abs(90-Math.abs(Math.atan((cursorUp.x-cursorDown.x)/(cursorUp.y-cursorDown.y)))*180/Math.PI);
+function findDist(pointone, pointtwo) {
+    return Math.sqrt(Math.pow(pointtwo.x-pointone.x, 2) + Math.pow(pointtwo.y-pointone.y, 2));
 }
 
-function flickSpeed() {
-	var d = findDist({
-		x: cursorDown.x,
-		y: cursorDown.y
-	}, {
-		x: cursorUp.x,
-		y: cursorUp.y
-	})*10;
-	return d/(cursorUp.time - cursorDown.time);
+function findCollision(square, circle) { // returns true if circle touches the square
+    var halfSide = square.sideLength/2;
+
+	var cornerCol =
+    (findDist({x: square.center.x-halfSide, y: square.center.y-halfSide}, {x: circle.center.x, y: circle.center.y}) < circle.radius) ||
+    (findDist({x: square.center.x+halfSide, y: square.center.y-halfSide}, {x: circle.center.x, y: circle.center.y}) < circle.radius) ||
+    (findDist({x: square.center.x+halfSide, y: square.center.y+halfSide}, {x: circle.center.x, y: circle.center.y}) < circle.radius) ||
+    (findDist({x: square.center.x-halfSide, y: square.center.y+halfSide}, {x: circle.center.x, y: circle.center.y}) < circle.radius);
+
+    var sideCol =
+    (square.center.x-halfSide < circle.center.x && circle.center.x < square.center.x+halfSide && square.center.y-halfSide-circle.radius < circle.center.y && circle.center.y < square.center.y+halfSide+circle.radius) ||
+    (square.center.x-halfSide-circle.radius < circle.center.x && circle.center.x < square.center.x+halfSide+circle.radius && square.center.y-halfSide < circle.center.y && circle.center.y < square.center.y+halfSide);
+
+    return (cornerCol || sideCol);
+}
+
+function mapMove(dist) {
+	spikes.forEach(function(spike) {
+		spike.x -= dist;
+	});
+	trampolines.forEach(function(trampoline) {
+		trampoline.x -= dist;
+	});
+	score += dist;
 }
